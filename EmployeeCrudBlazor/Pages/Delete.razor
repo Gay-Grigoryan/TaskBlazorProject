@@ -1,0 +1,80 @@
+﻿@page "/Delete/{Id}"
+@using EmployeeCrudBlazor.Data
+@using EmployeeCrudBlazor.Models
+@inject TaskService TaskService
+@inject NavigationManager NavigationManager
+<div style="background-color: #f0f0f0; min-height: 100vh; padding: 20px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div style="background-color: #fff; padding: 20px; border-radius: 5px;">
+                    <h2 class="text-center">Delete Task</h2>
+                    <hr />
+                    <h3 class="text-center">Are you sure you want to delete this task?</h3>
+                    <form>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label>Task Number:</label>
+                                    <label>@obj.Id</label>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <label>Task Name:</label>
+                                    <label>@obj.TaskName</label>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <label>Task Description:</label>
+                                    <label>@obj.TaskDescription</label>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <label>Date:</label>
+                                    <label>@obj.TaskDate</label>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <label>Task Importance Score:</label>
+                                    <label>@obj.TaskImportanceScore</label>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <label>Task Category:</label>
+                                    <label>@obj.TaskCategory</label>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group text-center">
+                                    <input type="button" class="btn btn-danger" @onclick="@DeleteTask" value="Delete" />
+                                    <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    Models.ToDo obj = new Models.ToDo();
+    protected override async Task OnInitializedAsync()
+    {
+        obj = await Task.Run(() => TaskService.GetTaskById(Convert.ToInt32(Id)));
+    }
+    protected async void DeleteTask()
+    {
+        await TaskService.DeleteTask(obj);
+        NavigationManager.NavigateTo("ToDo");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ToDo");
+    }
+}

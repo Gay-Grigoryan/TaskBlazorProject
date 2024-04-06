@@ -1,0 +1,77 @@
+﻿@page "/EditTask/{Id}"
+@using EmployeeCrudBlazor.Data
+@using EmployeeCrudBlazor.Models
+@inject TaskService TaskService
+@inject NavigationManager NavigationManager
+<h3>Edit Employee</h3>
+<hr />
+<form>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="TaskName" class="control-label"> Task Name</label>
+                    <input id="TaskName" class="form-control" @bind="@obj.TaskName" />
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="TaskDescription" class="control-label"> Task Description</label>
+                    <input id="TaskDescription" class="form-control" @bind="@obj.TaskDescription" />
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="Date" class="control-label"> Date</label>
+                    <input id="Date" class="form-control" @bind="@obj.TaskDate" />
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="TaskImportanceScore" class="control-label">Task Importancy</label>
+                    <InputSelect id="TaskImportanceScore" @bind-Value="@obj.TaskImportanceScore" class="form-control">
+                        <option value="Not so Important">Not so Important</option>
+                        <option value="Important">Important</option>
+                        <option value="Very Important">Very Important</option>
+                    </InputSelect>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="TaskCategory" class="control-label">Task Category</label>
+                    <input list="taskOptions" @bind="@obj.TaskCategory" class="form-control" placeholder="Select or enter task category">
+                    <datalist id="taskOptions">
+                        @foreach (var item in dropdownItems)
+                        {
+                            <option value="@item"></option>
+                        }
+                    </datalist>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" @onclick="@UpdateTask" value="Save" />
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    List<string> dropdownItems = new List<string> { "Work", "Education", "Hobbies" };
+    Models.ToDo obj = new Models.ToDo();
+    protected override async Task OnInitializedAsync()
+    {
+        obj = await TaskService.GetTaskById(Convert.ToInt32(Id));
+    }
+    protected async Task UpdateTask()
+    {
+        await TaskService.UpdateTask(obj);
+        NavigationManager.NavigateTo("ToDo");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ToDo");
+    }
+}

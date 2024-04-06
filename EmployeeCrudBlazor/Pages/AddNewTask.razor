@@ -1,0 +1,71 @@
+﻿@page "/AddTask"
+@using EmployeeCrudBlazor.Data
+@using EmployeeCrudBlazor.Models
+@inject TaskService TaskService
+@inject NavigationManager NavigationManager
+<div style="background-color: #f0f0f0; min-height: 100vh; padding: 20px;">
+    <h3 class="text-center mb-4">Add New Task</h3>
+    <form>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="TaskName" class="control-label">Task Name</label>
+                            <input for="TaskName" class="form-control" @bind="@obj.TaskName" />
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <label for="TaskDescription" class="control-label">Task Description</label>
+                            <input for="TaskDescription" class="form-control" @bind="@obj.TaskDescription" />
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <label for="TaskDate" class="control-label">Task Date</label><br />
+                            <input type="date" @bind="@obj.TaskDate" class="form-control" />
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <label for="TaskImportanceScore" class="control-label">Task Importancy</label>
+                            <select id="TaskImportanceScore" @bind="@obj.TaskImportanceScore" class="form-control">
+                                <option value="Not so Important">Not so Important</option>
+                                <option value="Important">Important</option>
+                                <option value="Very Important">Very Important</option>
+                            </select>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <label for="TaskCategory" class="control-label">Task Category</label>
+                            <input id="TaskCategory" list="taskOptions" @bind="@obj.TaskCategory" class="form-control" placeholder="Select or enter task category">
+                            <datalist id="taskOptions">
+                                @foreach (var item in dropdownItems)
+                                {
+                                    <option value="@item"></option>
+                                }
+                            </datalist>
+                        </div>
+                        <br />
+                        <div class="text-center">
+                            <button type="button" class="btn btn-success mx-2" @onclick="@CreateTask">Save</button>
+                            <button type="button" class="btn btn-danger mx-2" @onclick="@Cancel">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@code {
+    private DateTime SelectedDate { get; set; } = DateTime.Today;
+    List<string> dropdownItems = new List<string> { "Work", "Education", "Hobbies" };
+    ToDo obj = new Models.ToDo();
+    protected async void CreateTask()
+    {
+        await TaskService.InsertTask(obj);
+        NavigationManager.NavigateTo("ToDo");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ToDo");
+    }
+}

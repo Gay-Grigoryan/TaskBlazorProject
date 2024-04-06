@@ -1,0 +1,73 @@
+﻿@page "/ToDo"
+@using EmployeeCrudBlazor.Data
+@using EmployeeCrudBlazor.Models
+@inject TaskService TaskService
+<div style="background-color: #f0f0f0; min-height: 100vh; padding: 20px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div style="background-color: #fff; padding: 20px; border-radius: 5px;">
+                    <NavLink class="nav-link" href="AddTask">
+                        <span class="oi oi-plus" aria-hidden="true">Add New tasks</span>
+                    </NavLink>
+
+                    <h1 class="text-center">Task List</h1>
+
+                    @if (TaskObj is null)
+                    {
+                        <p class="text-center"><em>Loading.................</em></p>
+                    }
+                    else
+                    {
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>N</th>
+                                    <th>Task Name</th>
+                                    <th>Task Description</th>
+                                    <th>Task Date</th>
+                                    <th>Task Importancy</th>
+                                    <th>Task Category</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var task in TaskObj)
+                                {
+                                    <tr>
+                                        <td>@task.Id</td>
+                                        <td>@task.TaskName</td>
+                                        <td>@task.TaskDescription</td>
+                                        <td>@task.TaskDate</td>
+                                        <td>@task.TaskImportanceScore</td>
+                                        <td>@task.TaskCategory</td>
+                                        <td>
+                                            <a class="nav-link" href="EditTask/@task.Id">
+                                                <span class="oi oi-pencil" aria-hidden="true">Edit</span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="nav-link" href="Delete/@task.Id">
+                                                <span class="oi oi-trash" aria-hidden="true">Delete</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<Models.ToDo> TaskObj;
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        TaskObj = await Task.Run(() => TaskService.GetAllTasks());
+    }
+}
